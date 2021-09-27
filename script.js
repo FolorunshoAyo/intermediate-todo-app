@@ -115,10 +115,14 @@
             this.updateTodosLeft();
         }
 
-        updateTodosLeft() {
+       updateTodosLeft() {
             let todosLeft = this.totalTodos - this.finishedTodos.length;
-
+            
+            if(todosLeft < 0){
+                this.todosLeft.textContent = "0";  
+            }else{
             this.todosLeft.textContent = todosLeft.toString();
+            }
         }
 
         hideCompletedTodos() {
