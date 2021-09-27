@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <title>To-do App Project</title>
+  </head>
+  <body>
+    <header>
+      <div class="title">
+        <h1>To-do App</h1>
+        <p class="text-snippet">What do you need to do?</p>
+      </div>
+    </header>
+    <section class="filter-section">
+      <form>
+        <div class="form-group">
+          <input type="text" placeholder="Filter todos" id="filterTodoInput"/>
+          <label for="hideCompleted">
+            <input type="checkbox" id="hideCompleted" />
+            Hide completed
+          </label>
+        </div>
+      </form>
+    </section>
+    <main class="appBody">
+        <div class="app-content">
+            <h2>You have <span id="todos-left">0</span> todos left</h2>
+            <div class="todos">
+                <!-- <div class="todo" data-index = "0">
+                    <input type="checkbox" class="todoCheckbox">
+                    <p class="todo-content"> To do content that i would like to go into </p>
+                    <span class="remove">remove</span>
+                </div> -->
+            </div>
+        </div>
+    </main>
+    <section class="addTodo">
+        <form id="formEl">
+            <div class="form-group">
+                <input type="text" placeholder="New Todo" id="newTodo">
+                <button type="submit" role="button" class="submit-btn">Submit</button>
+            </div>
+        </form>
+    </section>
+    <script src="script.js"></script>
+  </body>
+</html>
