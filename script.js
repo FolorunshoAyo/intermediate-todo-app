@@ -79,7 +79,6 @@
                 self.todoStorage.forEach(todoItemStored => {
                     self.totalTodosStorageCounter++;
                     todoItemStored.totalTodos = self.totalTodosStorageCounter;
-                    console.log(self.totalTodosStorageCounter);
                 });
             }
 
@@ -223,7 +222,6 @@
                 todosChecked.forEach((checkedTodo,index) => {
                     if(checkedTodo){
                         todosFinished.push(todos[index]);
-                    }else{
                     }
             }); 
             }
