@@ -8,6 +8,7 @@
             this.todoContainer = document.querySelector(".todos");
             this.newTodoInput = document.getElementById("newTodo");
             this.submitTodo = document.querySelector(".submit-btn");
+            this.noOfInput = 0;
             this.totalTodos = 0;
             this.finishedTodos = [];
             this.todoStorage = [];
@@ -29,6 +30,10 @@
         createTodo() {
             let validated = this.validate();
             let inputValue = this.newTodoInput.value;
+            let initialLetter = inputValue.charAt(0);
+            let remainingChars = inputValue.substr(1);
+
+            inputValue = initialLetter.toUpperCase() + remainingChars;
 
             if (validated) {
                 this.todoContainer.insertAdjacentHTML('beforeend', `<div class="todo" data-index = "${this.indexCounter}" ><input type="checkbox" class="todoCheckbox"><p class="todo-content">${inputValue}</p> <span class="remove">remove</span></div>`);
@@ -37,7 +42,7 @@
 
                 this.addEventListenters(inputValue);
 
-                this.setStorage({content: inputValue, crossed: false, totalTodos: this.totalTodos});
+                this.setStorage({ content: inputValue, crossed: false, totalTodos: this.totalTodos });
 
                 this.newTodoInput.value = "";
 
@@ -60,7 +65,7 @@
                 }
 
             }
-            function removeTodo(){
+            function removeTodo() {
                 let todoToDelete = this.parentElement;
                 self.totalTodos--;
 
@@ -74,7 +79,7 @@
                 self.updateTodosLeft();
             }
 
-            function refreshTotalTodos(){
+            function refreshTotalTodos() {
                 self.totalTodosStorageCounter = 0;
                 self.todoStorage.forEach(todoItemStored => {
                     self.totalTodosStorageCounter++;
@@ -96,9 +101,9 @@
             let checkedInputs = document.querySelectorAll(".todoCheckbox");
 
             checkedInputs.forEach((checkedInput, index) => {
-                if(checkedInput.checked){
+                if (checkedInput.checked) {
                     self.todoStorage[index].crossed = true;
-                }else{
+                } else {
                     self.todoStorage[index].crossed = false;
                 }
             });
@@ -114,13 +119,13 @@
             this.updateTodosLeft();
         }
 
-       updateTodosLeft() {
+        updateTodosLeft() {
             let todosLeft = this.totalTodos - this.finishedTodos.length;
-            
-            if(todosLeft < 0){
-                this.todosLeft.textContent = "0";  
-            }else{
-            this.todosLeft.textContent = todosLeft.toString();
+            if (todosLeft < 0) {
+                this.todosLeft.textContent = "0";
+                console.log("executed");
+            } else {
+                this.todosLeft.textContent = todosLeft.toString();
             }
         }
 
@@ -152,9 +157,21 @@
         filterTodos() {
             let userInput = this.filterTodoInput.value.trim().toLowerCase();
             let todoItems = document.querySelectorAll(".todo");
+            let initialLetterCap = userInput.charAt(0);
+
+            this.noOfInput++;
+
+            if(userInput.length == 0){
+                this.noOfInput = 0;
+            }
+
+            if (this.noOfInput == 1){
+                initialLetterCap = initialLetterCap.toUpperCase();
+                this.filterTodoInput.value = initialLetterCap;
+            }
 
             todoItems.forEach(todoItem => {
-                if (todoItem.lastElementChild.textContent.includes(userInput)) {
+                if (todoItem.lastElementChild.previousElementSibling.textContent.includes(this.filterTodoInput.value)) {
                     todoItem.classList.remove("remove");
                 } else {
                     todoItem.classList.remove("remove");
@@ -163,30 +180,30 @@
             });
         }
 
-        setStorage(todoInfo){
+        setStorage(todoInfo) {
             this.todoStorage.push(todoInfo);
-            
+
             let storage = JSON.stringify(this.todoStorage);
 
             localStorage.setItem("todoStorage", storage);
         }
 
-        clearStorage(){
+        clearStorage() {
             localStorage.clear();
         }
 
-        updateStorage(){
+        updateStorage() {
             let todoStorage = this.todoStorage;
 
             localStorage.setItem("todoStorage", JSON.stringify(todoStorage));
         }
 
-        getStorage(){
+        getStorage() {
             let self = this;
             let storage = localStorage.getItem("todoStorage");
             let todosChecked = [];
             let todosFinished = [];
-            if(storage == undefined || storage == null) return
+            if (storage == undefined || storage == null) return
 
             let todoItems = JSON.parse(storage);
 
@@ -194,13 +211,13 @@
 
 
             todoItems.forEach(todoItem => {
-                if(todoItem.crossed == false){
-                todosChecked.push(todoItem.crossed);
-                this.todoContainer.insertAdjacentHTML('beforeend', `<div class="todo" data-index = ${this.indexCounter}><input type="checkbox" class="todoCheckbox"><p class="todo-content">${todoItem.content}</p> <span class="remove">remove</span></div>`);
-                this.indexCounter++;
-                }else{  
+                if (todoItem.crossed == false) {
                     todosChecked.push(todoItem.crossed);
-                    this.todoContainer.insertAdjacentHTML('beforeend', `<div class="todo" data-index = ${this.indexCounter}><input type="checkbox" class="todoCheckbox"><p class="todo-content cross">${todoItem.content}</p> <span class="remove">remove</span></div>`); 
+                    this.todoContainer.insertAdjacentHTML('beforeend', `<div class="todo" data-index = ${this.indexCounter}><input type="checkbox" class="todoCheckbox"><p class="todo-content">${todoItem.content}</p> <span class="remove">remove</span></div>`);
+                    this.indexCounter++;
+                } else {
+                    todosChecked.push(todoItem.crossed);
+                    this.todoContainer.insertAdjacentHTML('beforeend', `<div class="todo" data-index = ${this.indexCounter}><input type="checkbox" class="todoCheckbox"><p class="todo-content cross">${todoItem.content}</p> <span class="remove">remove</span></div>`);
                     this.indexCounter++;
                 }
             });
@@ -208,7 +225,7 @@
             syncCheckboxesInStorage();
             syncFinishedTodosInStorage();
 
-            function syncCheckboxesInStorage (){
+            function syncCheckboxesInStorage() {
                 let checkboxes = document.querySelectorAll(".todoCheckbox");
 
                 checkboxes.forEach((checkbox, index) => {
@@ -217,23 +234,24 @@
             }
 
 
-            function syncFinishedTodosInStorage(){
+            function syncFinishedTodosInStorage() {
                 let todos = document.querySelectorAll(".todo");
-                todosChecked.forEach((checkedTodo,index) => {
-                    if(checkedTodo){
+                todosChecked.forEach((checkedTodo, index) => {
+                    if (checkedTodo) {
                         todosFinished.push(todos[index]);
+                    } else {
                     }
-            }); 
+                });
             }
 
-            if(todoItems.length == 0) return
+            if (todoItems.length == 0) return
             else this.totalTodos = todoItems[todoItems.length - 1].totalTodos;
-            
+
 
             todoItems.forEach(storedTodoItem => {
                 self.addEventListenters(storedTodoItem.content)
             });
-            
+
             this.finishedTodos = todosFinished;
             this.updateTodosLeft();
         }
@@ -249,7 +267,6 @@
     let filterTodoInput = document.getElementById("filterTodoInput");
 
     function addEventListenters() {
-
         formEl.addEventListener("submit", (e) => {
             e.preventDefault();
             app.createTodo();
